@@ -1,14 +1,13 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
-import 'package:launch_at_startup/launch_at_startup.dart';
 import 'package:provider/provider.dart';
-import 'package:tray_manager/tray_manager.dart';
 import 'package:window_manager/window_manager.dart';
 
 import 'config.dart';
 import 'services/calendar_service.dart';
 import 'services/overlay_service.dart';
+import 'services/watchdog_service.dart';
 import 'screens/home_screen.dart';
 
 void main() async {
@@ -20,8 +19,9 @@ void main() async {
   // the calendar from the menu bar.
   await windowManager.setPreventClose(true);
 
-  // Auto-start at login so it's always running in the background.
-  await _setupLaunchAtStartup();
+  // Keep-alive watchdog: starts the app at login AND relaunches it within
+  // ~30s if it crashes or is killed.
+  await WatchdogService.install();
 
   WindowOptions windowOptions = const WindowOptions(
     size: Size(420, 620),
@@ -44,19 +44,6 @@ void main() async {
       child: const MeetingNotifierApp(),
     ),
   );
-}
-
-Future<void> _setupLaunchAtStartup() async {
-  try {
-    launchAtStartup.setup(
-      appName: 'Meeting Notifier',
-      appPath: Platform.resolvedExecutable,
-    );
-    await launchAtStartup.enable();
-  } catch (e) {
-    // Fails for unbundled debug runs — harmless.
-    debugPrint('Launch-at-startup setup failed: $e');
-  }
 }
 
 class MeetingNotifierApp extends StatelessWidget {
@@ -95,64 +82,49 @@ class AppShell extends StatefulWidget {
   State<AppShell> createState() => _AppShellState();
 }
 
-class _AppShellState extends State<AppShell>
-    with TrayListener, WindowListener {
+class _AppShellState extends State<AppShell> with WindowListener {
   @override
   void initState() {
     super.initState();
-    trayManager.addListener(this);
     windowManager.addListener(this);
     _initTray();
+    _maybeShowFirstRunWindow();
+  }
 
-    // Give silent sign-in a moment; if the user still isn't signed in,
-    // bring the window up so they can sign in once.
-    Future.delayed(const Duration(seconds: 4), () async {
+  /// Pops the window ONLY on the very first launch after install, so the
+  /// user can sign in once. Every later start (login, watchdog relaunch,
+  /// reboot) is fully silent — the app is reachable from the ✈ menu bar icon.
+  Future<void> _maybeShowFirstRunWindow() async {
+    try {
+      final home = Platform.environment['HOME'] ?? '';
+      final marker = File(
+          '$home/Library/Application Support/meeting_notifier/first_run_done');
+      if (await marker.exists()) return;
+      await marker.create(recursive: true);
+
+      // Give silent sign-in a moment before deciding.
+      await Future.delayed(const Duration(seconds: 4));
       if (!mounted) return;
       final service = context.read<CalendarService>();
       if (!service.isSignedIn) {
         await OverlayService.showWindow();
       }
-    });
+    } catch (e) {
+      debugPrint('First-run check failed: $e');
+    }
   }
 
   Future<void> _initTray() async {
-    // Plane glyph in the menu bar — no icon asset needed.
-    await trayManager.setTitle('✈');
-    await trayManager.setToolTip('Meeting Notifier');
-    await trayManager.setContextMenu(
-      Menu(
-        items: [
-          MenuItem(
-            key: 'open',
-            label: 'Open Meeting Notifier',
-          ),
-          MenuItem(
-            key: 'test',
-            label: 'Test fly-over (meeting in $kAlertLeadMinutes min)',
-          ),
-          MenuItem.separator(),
-          MenuItem(
-            key: 'quit',
-            label: 'Quit',
-          ),
-        ],
-      ),
+    // Native NSStatusItem (created in MainFlutterWindow.swift) — shows an
+    // airplane SF Symbol next to the wifi/battery icons.
+    await OverlayService.initTray(
+      testLabel: 'Test fly-over (meeting in $kAlertLeadMinutes min)',
+      onMenuClick: _onTrayMenuClick,
     );
   }
 
-  @override
-  void onTrayIconMouseDown() {
-    trayManager.popUpContextMenu();
-  }
-
-  @override
-  void onTrayIconRightMouseDown() {
-    trayManager.popUpContextMenu();
-  }
-
-  @override
-  void onTrayMenuItemClick(MenuItem menuItem) {
-    switch (menuItem.key) {
+  void _onTrayMenuClick(String key) {
+    switch (key) {
       case 'open':
         OverlayService.showWindow();
         break;
@@ -160,7 +132,10 @@ class _AppShellState extends State<AppShell>
         context.read<CalendarService>().triggerTestAlert();
         break;
       case 'quit':
-        windowManager.destroy().then((_) => exit(0));
+        // Remove the watchdog first so the quit isn't undone 30s later.
+        WatchdogService.uninstall()
+            .then((_) => windowManager.destroy())
+            .then((_) => exit(0));
         break;
     }
   }
@@ -176,7 +151,6 @@ class _AppShellState extends State<AppShell>
 
   @override
   void dispose() {
-    trayManager.removeListener(this);
     windowManager.removeListener(this);
     super.dispose();
   }

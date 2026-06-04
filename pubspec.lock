@@ -256,14 +256,6 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "0.6.7"
-  launch_at_startup:
-    dependency: "direct main"
-    description:
-      name: launch_at_startup
-      sha256: "1f8a75520913d1038630049e6c44a2575a23ffd28cc8b14fdf37401d1d21de84"
-      url: "https://pub.dev"
-    source: hosted
-    version: "0.3.1"
   leak_tracker:
     dependency: transitive
     description:
@@ -320,14 +312,6 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "0.11.1"
-  menu_base:
-    dependency: transitive
-    description:
-      name: menu_base
-      sha256: "820368014a171bd1241030278e6c2617354f492f5c703d7b7d4570a6b8b84405"
-      url: "https://pub.dev"
-    source: hosted
-    version: "0.1.1"
   meta:
     dependency: transitive
     description:
@@ -440,14 +424,6 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "0.1.9"
-  shortid:
-    dependency: transitive
-    description:
-      name: shortid
-      sha256: d0b40e3dbb50497dad107e19c54ca7de0d1a274eb9b4404991e443dadb9ebedb
-      url: "https://pub.dev"
-    source: hosted
-    version: "0.1.2"
   sky_engine:
     dependency: transitive
     description: flutter
@@ -501,14 +477,6 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "0.7.3"
-  tray_manager:
-    dependency: "direct main"
-    description:
-      name: tray_manager
-      sha256: bdc3ac6c36f3d12d871459e4a9822705ce5a1165a17fa837103bc842719bf3f7
-      url: "https://pub.dev"
-    source: hosted
-    version: "0.2.4"
   typed_data:
     dependency: transitive
     description:
@@ -613,14 +581,6 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "5.10.1"
-  win32_registry:
-    dependency: transitive
-    description:
-      name: win32_registry
-      sha256: "21ec76dfc731550fd3e2ce7a33a9ea90b828fdf19a5c3bcf556fa992cfa99852"
-      url: "https://pub.dev"
-    source: hosted
-    version: "1.1.5"
   window_manager:
     dependency: "direct main"
     description:

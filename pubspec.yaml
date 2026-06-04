@@ -24,12 +24,6 @@ dependencies:
   # Screen dimensions for full-screen overlay
   screen_retriever: ^0.1.9
 
-  # Menu bar (tray) icon so the app lives in the background
-  tray_manager: ^0.2.3
-
-  # Auto-start at login
-  launch_at_startup: ^0.3.1
-
   # Open meeting links in browser
   url_launcher: ^6.2.5
 

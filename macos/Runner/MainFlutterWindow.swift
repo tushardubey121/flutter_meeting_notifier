@@ -7,6 +7,10 @@ class MainFlutterWindow: NSWindow {
   private var savedLevel: NSWindow.Level?
   private var wasVisibleBeforeOverlay = false
 
+  // Menu bar status item (native — more reliable than plugin-based tray)
+  private var statusItem: NSStatusItem?
+  private var channel: FlutterMethodChannel?
+
   override func awakeFromNib() {
     let flutterViewController = FlutterViewController()
     // Flutter's render surface must itself be transparent, otherwise the
@@ -29,6 +33,7 @@ class MainFlutterWindow: NSWindow {
       name: "meeting_notifier/overlay",
       binaryMessenger: messenger
     )
+    self.channel = channel
 
     channel.setMethodCallHandler { [weak self] call, result in
       guard let self = self else {
@@ -60,10 +65,96 @@ class MainFlutterWindow: NSWindow {
       case "isWindowVisible":
         result(self.isVisible)
 
+      case "initTray":
+        let args = call.arguments as? [String: Any]
+        let testLabel = args?["testLabel"] as? String ?? "Test fly-over"
+        self.initTray(testLabel: testLabel)
+        result(nil)
+
       default:
         result(FlutterMethodNotImplemented)
       }
     }
+  }
+
+  // MARK: - Menu bar status item
+
+  private func initTray(testLabel: String) {
+    // A status item created BEFORE the app finishes launching never gets
+    // placed in the menu bar (zero-height window). Flutter starts Dart
+    // early enough to hit this, so defer until launch completes.
+    if NSApp.isRunning {
+      createStatusItem(testLabel: testLabel)
+    } else {
+      NotificationCenter.default.addObserver(
+        forName: NSApplication.didFinishLaunchingNotification,
+        object: nil,
+        queue: .main
+      ) { [weak self] _ in
+        self?.createStatusItem(testLabel: testLabel)
+      }
+    }
+  }
+
+  private func createStatusItem(testLabel: String) {
+    guard statusItem == nil else { return }
+
+    let item = NSStatusBar.system.statusItem(withLength: NSStatusItem.squareLength)
+    if let button = item.button {
+      if #available(macOS 11.0, *),
+         let image = NSImage(
+           systemSymbolName: "airplane",
+           accessibilityDescription: "Meeting Notifier"
+         ) {
+        button.image = image
+      } else {
+        button.title = "✈"
+      }
+      button.toolTip = "Meeting Notifier"
+    }
+
+    let menu = NSMenu()
+
+    let openItem = NSMenuItem(
+      title: "Open Meeting Notifier",
+      action: #selector(trayOpenClicked),
+      keyEquivalent: ""
+    )
+    openItem.target = self
+    menu.addItem(openItem)
+
+    let testItem = NSMenuItem(
+      title: testLabel,
+      action: #selector(trayTestClicked),
+      keyEquivalent: ""
+    )
+    testItem.target = self
+    menu.addItem(testItem)
+
+    menu.addItem(NSMenuItem.separator())
+
+    let quitItem = NSMenuItem(
+      title: "Quit",
+      action: #selector(trayQuitClicked),
+      keyEquivalent: ""
+    )
+    quitItem.target = self
+    menu.addItem(quitItem)
+
+    item.menu = menu
+    statusItem = item
+  }
+
+  @objc private func trayOpenClicked() {
+    channel?.invokeMethod("trayMenuClick", arguments: "open")
+  }
+
+  @objc private func trayTestClicked() {
+    channel?.invokeMethod("trayMenuClick", arguments: "test")
+  }
+
+  @objc private func trayQuitClicked() {
+    channel?.invokeMethod("trayMenuClick", arguments: "quit")
   }
 
   /// Transforms the window into a transparent, borderless, always-on-top strip

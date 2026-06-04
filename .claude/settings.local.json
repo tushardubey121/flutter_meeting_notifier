@@ -17,7 +17,17 @@
       "Bash(pkill -f \"meeting_notifier.app/Contents/MacOS/meeting_notifier\")",
       "Bash(echo \"exit: $?\")",
       "Bash(ditto -c -k --sequesterRsrc --keepParent \"build/macos/Build/Products/Release/meeting_notifier.app\" \"MeetingNotifier-v1.0.zip\")",
-      "Bash(cp -R \"build/macos/Build/Products/Release/meeting_notifier.app\" /Applications/)"
+      "Bash(cp -R \"build/macos/Build/Products/Release/meeting_notifier.app\" /Applications/)",
+      "Bash(launchctl print *)",
+      "Read(//Users/tushardubey/.pub-cache/hosted/**)",
+      "Bash(cat)",
+      "Bash(swift /tmp/make_tray_icon.swift \"/Users/tushardubey/Documents/flutter_work/flutter_meeting_notifier/assets/tray_icon.png\")",
+      "Bash(osascript *)",
+      "Bash(log show *)",
+      "Bash(screencapture -x -R \"870,0,600,40\" /tmp/menubar.png)",
+      "Read(//tmp/**)",
+      "Bash(/Applications/meeting_notifier.app/Contents/MacOS/meeting_notifier)",
+      "Bash(swift /tmp/list_statusitems.swift)"
     ]
   }
 }

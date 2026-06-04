@@ -32,4 +32,19 @@ class OverlayService {
 
   static Future<bool> isWindowVisible() async =>
       await _channel.invokeMethod<bool>('isWindowVisible') ?? false;
+
+  /// Creates the native menu bar (status) item with its menu, and registers
+  /// [onMenuClick] for menu selections ('open' | 'test' | 'quit').
+  static Future<void> initTray({
+    required String testLabel,
+    required void Function(String key) onMenuClick,
+  }) async {
+    _channel.setMethodCallHandler((call) async {
+      if (call.method == 'trayMenuClick') {
+        onMenuClick(call.arguments as String);
+      }
+      return null;
+    });
+    await _channel.invokeMethod('initTray', {'testLabel': testLabel});
+  }
 }
