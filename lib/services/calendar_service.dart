@@ -35,6 +35,7 @@ class CalendarService extends ChangeNotifier {
   bool _isLoading = false;
   String? _error;
   Timer? _pollTimer;
+  Timer? _alertCheckTimer;
 
   // Notifier for when a meeting is about to start (triggers the plane animation)
   final _notificationController = StreamController<Meeting>.broadcast();
@@ -141,15 +142,26 @@ class CalendarService extends ChangeNotifier {
 
   void _startPolling() {
     _pollTimer?.cancel();
-    // Poll every 60 seconds
-    _pollTimer = Timer.periodic(const Duration(seconds: 60), (_) {
+    _alertCheckTimer?.cancel();
+
+    // Network fetch — kept infrequent to save resources.
+    _pollTimer = Timer.periodic(const Duration(seconds: kCalendarPollSeconds),
+        (_) {
       fetchMeetings();
+    });
+
+    // Local alert check against the cached meeting list — pure in-memory
+    // comparison, no network — so alerts stay on time despite slow polling.
+    _alertCheckTimer = Timer.periodic(const Duration(seconds: 20), (_) {
+      _checkForAlerts();
     });
   }
 
   void _stopPolling() {
     _pollTimer?.cancel();
     _pollTimer = null;
+    _alertCheckTimer?.cancel();
+    _alertCheckTimer = null;
   }
 
   /// Simulates a meeting starting in [kAlertLeadMinutes] minutes — fires the

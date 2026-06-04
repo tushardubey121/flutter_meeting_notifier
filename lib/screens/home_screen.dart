@@ -32,7 +32,8 @@ class _HomeScreenState extends State<HomeScreen> {
     super.initState();
     _setupAlertListener();
 
-    _refreshTimer = Timer.periodic(const Duration(seconds: 30), (_) {
+    // Cosmetic refresh of the visible meeting list (e.g. "in 12 minutes").
+    _refreshTimer = Timer.periodic(const Duration(seconds: 60), (_) {
       if (mounted && !_isOverlayMode) setState(() {});
     });
   }
