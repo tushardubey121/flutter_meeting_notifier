@@ -16,7 +16,8 @@
       "Bash(osascript -e 'tell application \"System Events\" to get name of every login item')",
       "Bash(pkill -f \"meeting_notifier.app/Contents/MacOS/meeting_notifier\")",
       "Bash(echo \"exit: $?\")",
-      "Bash(ditto -c -k --sequesterRsrc --keepParent \"build/macos/Build/Products/Release/meeting_notifier.app\" \"MeetingNotifier-v1.0.zip\")"
+      "Bash(ditto -c -k --sequesterRsrc --keepParent \"build/macos/Build/Products/Release/meeting_notifier.app\" \"MeetingNotifier-v1.0.zip\")",
+      "Bash(cp -R \"build/macos/Build/Products/Release/meeting_notifier.app\" /Applications/)"
     ]
   }
 }
