@@ -1,0 +1,19 @@
+# Credentials — never commit
+lib/google_client_id.dart
+
+# Flutter/Dart
+.dart_tool/
+.flutter-plugins
+.flutter-plugins-dependencies
+build/
+*.iml
+.idea/
+
+# macOS
+macos/Flutter/ephemeral/
+*.xcworkspace/
+*.xcodeproj/
+Podfile.lock
+
+# Windows
+windows/flutter/ephemeral/

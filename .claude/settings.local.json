@@ -1,0 +1,22 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(flutter create *)",
+      "Bash(flutter run *)",
+      "Bash(xcode-select --print-path)",
+      "Bash(xcodebuild -version)",
+      "Bash(sudo xcode-select --switch /Applications/Xcode.app/Contents/Developer)",
+      "Bash(sudo xcodebuild -license accept)",
+      "Bash(flutter pub *)",
+      "Bash(flutter analyze *)",
+      "Bash(flutter build *)",
+      "Bash(rm -rf \"/Applications/meeting_notifier.app\")",
+      "Bash(cp -R \"/Users/tushardubey/Documents/flutter_work/flutter_meeting_notifier/build/macos/Build/Products/Release/meeting_notifier.app\" /Applications/)",
+      "Bash(open \"/Applications/meeting_notifier.app\")",
+      "Bash(osascript -e 'tell application \"System Events\" to get name of every login item')",
+      "Bash(pkill -f \"meeting_notifier.app/Contents/MacOS/meeting_notifier\")",
+      "Bash(echo \"exit: $?\")",
+      "Bash(ditto -c -k --sequesterRsrc --keepParent \"build/macos/Build/Products/Release/meeting_notifier.app\" \"MeetingNotifier-v1.0.zip\")"
+    ]
+  }
+}
