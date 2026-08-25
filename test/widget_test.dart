@@ -1,30 +1,36 @@
-// This is a basic Flutter widget test.
-//
-// To perform an interaction with a widget in your test, use the WidgetTester
-// utility in the flutter_test package. For example, you can send tap and scroll
-// gestures. You can also use WidgetTester to find child widgets in the widget
-// tree, read text, and verify that the values of widget properties are correct.
-
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
-
-import 'package:meeting_notifier/main.dart';
+import 'package:meeting_notifier/models/meeting.dart';
+import 'package:meeting_notifier/widgets/meeting_card.dart';
 
 void main() {
-  testWidgets('Counter increments smoke test', (WidgetTester tester) async {
-    // Build our app and trigger a frame.
-    await tester.pumpWidget(const MeetingNotifierApp());
+  test('formattedTime uses 12-hour clock', () {
+    final meeting = Meeting(
+      id: '1',
+      title: 'Standup',
+      startTime: DateTime(2026, 8, 25, 14, 5),
+      endTime: DateTime(2026, 8, 25, 14, 30),
+    );
+    expect(meeting.formattedTime, '2:05 PM');
+  });
 
-    // Verify that our counter starts at 0.
-    expect(find.text('0'), findsOneWidget);
-    expect(find.text('1'), findsNothing);
+  testWidgets('MeetingCard shows title and Join when a Meet link exists',
+      (tester) async {
+    final meeting = Meeting(
+      id: '1',
+      title: 'Weekly Team Standup',
+      startTime: DateTime.now().add(const Duration(minutes: 30)),
+      endTime: DateTime.now().add(const Duration(minutes: 60)),
+      meetLink: 'https://meet.google.com/abc-defg-hij',
+    );
 
-    // Tap the '+' icon and trigger a frame.
-    await tester.tap(find.byIcon(Icons.add));
-    await tester.pump();
+    await tester.pumpWidget(
+      MaterialApp(
+        home: Scaffold(body: MeetingCard(meeting: meeting)),
+      ),
+    );
 
-    // Verify that our counter has incremented.
-    expect(find.text('0'), findsNothing);
-    expect(find.text('1'), findsOneWidget);
+    expect(find.text('Weekly Team Standup'), findsOneWidget);
+    expect(find.text('Join'), findsOneWidget);
   });
 }

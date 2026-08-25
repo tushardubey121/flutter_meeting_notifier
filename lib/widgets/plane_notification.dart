@@ -102,7 +102,8 @@ class _PlaneNotificationOverlayState extends State<PlaneNotificationOverlay>
   }
 
   Future<void> _startAnimation() async {
-    await _fadeController.animateTo(0.5, duration: const Duration(milliseconds: 300));
+    await _fadeController.animateTo(0.5,
+        duration: const Duration(milliseconds: 300));
 
     if (mounted) setState(() => _showBanner = true);
     _flagController.forward();
@@ -117,7 +118,8 @@ class _PlaneNotificationOverlayState extends State<PlaneNotificationOverlay>
   Future<void> _dismiss() async {
     if (_isDismissing) return;
     setState(() => _isDismissing = true);
-    await _fadeController.animateTo(1.0, duration: const Duration(milliseconds: 400));
+    await _fadeController.animateTo(1.0,
+        duration: const Duration(milliseconds: 400));
     if (mounted) widget.onDismiss();
   }
 
@@ -173,9 +175,9 @@ class _PlaneNotificationOverlayState extends State<PlaneNotificationOverlay>
                         begin: Alignment.topCenter,
                         end: Alignment.bottomCenter,
                         colors: [
-                          Colors.black.withOpacity(0.0),
-                          Colors.black.withOpacity(0.12),
-                          Colors.black.withOpacity(0.0),
+                          Colors.black.withValues(alpha: 0.0),
+                          Colors.black.withValues(alpha: 0.12),
+                          Colors.black.withValues(alpha: 0.0),
                         ],
                       ),
                     ),
@@ -196,14 +198,12 @@ class _PlaneNotificationOverlayState extends State<PlaneNotificationOverlay>
                           alignment: Alignment.centerRight,
                           child: _buildFlagBanner(),
                         ),
-
                       if (_showBanner)
                         Container(
                           width: 48 * _flagTrail.value,
                           height: 2,
-                          color: Colors.white.withOpacity(0.8),
+                          color: Colors.white.withValues(alpha: 0.8),
                         ),
-
                       const SizedBox(width: 8),
                       _buildPlane(),
                     ],
@@ -245,12 +245,13 @@ class _PlaneNotificationOverlayState extends State<PlaneNotificationOverlay>
           borderRadius: BorderRadius.circular(12),
           boxShadow: [
             BoxShadow(
-              color: Colors.black.withOpacity(0.35),
+              color: Colors.black.withValues(alpha: 0.35),
               blurRadius: 16,
               offset: const Offset(0, 4),
             ),
           ],
-          border: Border.all(color: Colors.white.withOpacity(0.2), width: 1),
+          border:
+              Border.all(color: Colors.white.withValues(alpha: 0.2), width: 1),
         ),
         child: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
@@ -268,7 +269,7 @@ class _PlaneNotificationOverlayState extends State<PlaneNotificationOverlay>
                         vertical: 3,
                       ),
                       decoration: BoxDecoration(
-                        color: Colors.white.withOpacity(0.18),
+                        color: Colors.white.withValues(alpha: 0.18),
                         borderRadius: BorderRadius.circular(20),
                       ),
                       child: Text(
@@ -297,7 +298,7 @@ class _PlaneNotificationOverlayState extends State<PlaneNotificationOverlay>
                     Text(
                       widget.meeting.formattedTime,
                       style: TextStyle(
-                        color: Colors.white.withOpacity(0.75),
+                        color: Colors.white.withValues(alpha: 0.75),
                         fontSize: 12,
                       ),
                     ),
@@ -305,7 +306,6 @@ class _PlaneNotificationOverlayState extends State<PlaneNotificationOverlay>
                 ),
               ),
               const SizedBox(width: 12),
-
               Column(
                 mainAxisSize: MainAxisSize.min,
                 children: [
@@ -353,10 +353,11 @@ class _PlaneNotificationOverlayState extends State<PlaneNotificationOverlay>
                     child: Container(
                       padding: const EdgeInsets.all(4),
                       decoration: BoxDecoration(
-                        color: Colors.white.withOpacity(0.15),
+                        color: Colors.white.withValues(alpha: 0.15),
                         shape: BoxShape.circle,
                       ),
-                      child: const Icon(Icons.close, color: Colors.white, size: 14),
+                      child: const Icon(Icons.close,
+                          color: Colors.white, size: 14),
                     ),
                   ),
                 ],
@@ -455,7 +456,7 @@ class _PlanePainter extends CustomPainter {
     );
 
     // Exhaust trail
-    paint.color = Colors.white.withOpacity(0.4);
+    paint.color = Colors.white.withValues(alpha: 0.4);
     for (int i = 0; i < 4; i++) {
       canvas.drawCircle(
         Offset(-34.0 - i * 8, 0),

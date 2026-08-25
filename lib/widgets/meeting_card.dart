@@ -16,13 +16,13 @@ class MeetingCard extends StatelessWidget {
       margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 6),
       decoration: BoxDecoration(
         color: isUrgent
-            ? const Color(0xFF0D47A1).withOpacity(0.08)
+            ? const Color(0xFF0D47A1).withValues(alpha: 0.08)
             : theme.colorScheme.surface,
         borderRadius: BorderRadius.circular(12),
         border: Border.all(
           color: isUrgent
-              ? const Color(0xFF1565C0).withOpacity(0.4)
-              : theme.dividerColor.withOpacity(0.3),
+              ? const Color(0xFF1565C0).withValues(alpha: 0.4)
+              : theme.dividerColor.withValues(alpha: 0.3),
           width: isUrgent ? 1.5 : 0.5,
         ),
       ),
@@ -57,9 +57,9 @@ class MeetingCard extends StatelessWidget {
                         color: const Color(0xFF1565C0),
                         borderRadius: BorderRadius.circular(10),
                       ),
-                      child: Text(
+                      child: const Text(
                         'SOON',
-                        style: const TextStyle(
+                        style: TextStyle(
                           color: Colors.white,
                           fontSize: 9,
                           fontWeight: FontWeight.w700,
@@ -95,7 +95,7 @@ class MeetingCard extends StatelessWidget {
                       fontSize: 12,
                       color: isUrgent
                           ? const Color(0xFF1565C0)
-                          : theme.colorScheme.onSurface.withOpacity(0.5),
+                          : theme.colorScheme.onSurface.withValues(alpha: 0.5),
                     ),
                   ),
                   if (meeting.attendees.isNotEmpty)
@@ -105,7 +105,8 @@ class MeetingCard extends StatelessWidget {
                         '${meeting.attendees.length} attendees',
                         style: TextStyle(
                           fontSize: 11,
-                          color: theme.colorScheme.onSurface.withOpacity(0.4),
+                          color: theme.colorScheme.onSurface
+                              .withValues(alpha: 0.4),
                         ),
                       ),
                     ),
@@ -121,7 +122,8 @@ class MeetingCard extends StatelessWidget {
                   onPressed: () async {
                     final uri = Uri.parse(meeting.meetLink!);
                     if (await canLaunchUrl(uri)) {
-                      await launchUrl(uri, mode: LaunchMode.externalApplication);
+                      await launchUrl(uri,
+                          mode: LaunchMode.externalApplication);
                     }
                   },
                   icon: const Icon(Icons.videocam_rounded, size: 14),
@@ -129,7 +131,8 @@ class MeetingCard extends StatelessWidget {
                   style: OutlinedButton.styleFrom(
                     foregroundColor: const Color(0xFF1565C0),
                     side: const BorderSide(color: Color(0xFF1565C0)),
-                    padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+                    padding:
+                        const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
                     minimumSize: Size.zero,
                     tapTargetSize: MaterialTapTargetSize.shrinkWrap,
                     shape: RoundedRectangleBorder(

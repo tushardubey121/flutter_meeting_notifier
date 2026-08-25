@@ -249,13 +249,12 @@ class _HomeScreenState extends State<HomeScreen> {
                     ),
                   )
                 : const Icon(Icons.login_rounded),
-            label:
-                Text(service.isLoading ? 'Signing in...' : 'Sign in with Google'),
+            label: Text(
+                service.isLoading ? 'Signing in...' : 'Sign in with Google'),
             style: ElevatedButton.styleFrom(
               backgroundColor: const Color(0xFF1565C0),
               foregroundColor: Colors.white,
-              padding:
-                  const EdgeInsets.symmetric(horizontal: 28, vertical: 14),
+              padding: const EdgeInsets.symmetric(horizontal: 28, vertical: 14),
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(10),
               ),
@@ -356,7 +355,6 @@ class _HomeScreenState extends State<HomeScreen> {
             ),
           ),
           const SliverToBoxAdapter(child: SizedBox(height: 20)),
-
           SliverToBoxAdapter(
             child: Center(
               child: Padding(

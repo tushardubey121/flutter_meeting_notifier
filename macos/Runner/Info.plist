@@ -30,6 +30,8 @@
 	<string>NSApplication</string>
 	<key>LSUIElement</key>
 	<true/>
+	<key>GIDClientID</key>
+	<string>562386051179-0v2uurhk7ctu8q5000th6216nn0ng4fs.apps.googleusercontent.com</string>
 	<key>CFBundleURLTypes</key>
 	<array>
 		<dict>

@@ -117,9 +117,11 @@ class CalendarService extends ChangeNotifier {
           // Skip all-day events (no dateTime, only date)
           if (event.start?.dateTime == null) continue;
           // Skip declined events
-          final selfRsvp = event.attendees?.where(
-            (a) => a.self == true,
-          ).firstOrNull;
+          final selfRsvp = event.attendees
+              ?.where(
+                (a) => a.self == true,
+              )
+              .firstOrNull;
           if (selfRsvp?.responseStatus == 'declined') continue;
 
           meetings.add(Meeting.fromGoogleEvent(event));
@@ -145,8 +147,8 @@ class CalendarService extends ChangeNotifier {
     _alertCheckTimer?.cancel();
 
     // Network fetch — kept infrequent to save resources.
-    _pollTimer = Timer.periodic(const Duration(seconds: kCalendarPollSeconds),
-        (_) {
+    _pollTimer =
+        Timer.periodic(const Duration(seconds: kCalendarPollSeconds), (_) {
       fetchMeetings();
     });
 

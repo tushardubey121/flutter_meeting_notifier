@@ -28,11 +28,6 @@ class Meeting {
     return diff.inSeconds >= 0 && diff.inMinutes <= kAlertLeadMinutes;
   }
 
-  bool get isStartingVeryySoon {
-    final diff = timeUntilStart;
-    return diff.inSeconds >= 0 && diff.inMinutes <= 1;
-  }
-
   String get formattedTime {
     final h = startTime.hour;
     final m = startTime.minute.toString().padLeft(2, '0');
@@ -75,8 +70,8 @@ class Meeting {
 
     final startStr = event.start?.dateTime?.toIso8601String() ??
         '${event.start?.date}T00:00:00';
-    final endStr = event.end?.dateTime?.toIso8601String() ??
-        '${event.end?.date}T23:59:59';
+    final endStr =
+        event.end?.dateTime?.toIso8601String() ?? '${event.end?.date}T23:59:59';
 
     final attendees = <String>[];
     if (event.attendees != null) {
